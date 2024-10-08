@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useBoardStore } from "../BoardState"
-
+import { Space } from "./Space"
 
 export default function Board() {
   const board = useBoardStore((store) => store.minesweeper.board)
@@ -10,9 +10,12 @@ export default function Board() {
   }, [])
 
   const spaces = board.map((row) => (
-    <div className="flex">
+    <div
+      className="flex my-1"
+      key={`r ${row[0].id}`}
+    >
       {row.map((space) => (
-        <p>{space.state}</p>
+        <Space {...space} key={space.id} />
       ))}
     </div>
   ))

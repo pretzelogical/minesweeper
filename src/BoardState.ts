@@ -1,15 +1,18 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 
-enum SpaceStates {
+export enum SpaceStates {
   Empty,
   Adjacent,
   Mined
 }
 
-type BoardSpaceType = {
+export type BoardSpaceType = {
   state: SpaceStates,
-  num: number
+  num: number,
+  id: string,
+  covered: boolean
+  pos: { x: number, y: number }
 }
 
 type BoardType = Array<Array<BoardSpaceType>>
@@ -23,22 +26,35 @@ type GameState = {
   minesweeper: MineSweeperState
 }
 
+function newSpace({
+  state = SpaceStates.Empty,
+  num = 0,
+  id = '',
+  covered = true,
+  pos = { x: 0, y: 0 }
+}): BoardSpaceType {
+  return {
+    state,
+    num,
+    id,
+    covered,
+    pos
+  }
+}
+
 
 export const useBoardStore = create<GameState>()(
   immer((set) => ({
     minesweeper: {
       board: [
-        [{ state: SpaceStates.Empty, num: 0 }, { state: SpaceStates.Empty, num: 0 }, { state: SpaceStates.Empty, num: 0 }, { state: SpaceStates.Empty, num: 0 }],
-        [{ state: SpaceStates.Empty, num: 0 }, { state: SpaceStates.Empty, num: 0 }, { state: SpaceStates.Empty, num: 0 }, { state: SpaceStates.Empty, num: 0 }],
-        [{ state: SpaceStates.Empty, num: 0 }, { state: SpaceStates.Empty, num: 0 }, { state: SpaceStates.Empty, num: 0 }, { state: SpaceStates.Empty, num: 0 }],
-        [{ state: SpaceStates.Empty, num: 0 }, { state: SpaceStates.Empty, num: 0 }, { state: SpaceStates.Empty, num: 0 }, { state: SpaceStates.Empty, num: 0 }],
+        [newSpace({})]
       ] as BoardType,
       initialize: (width: number, height: number, bombs: number): void => {
         const newBoard: BoardType = [];
         for (let i = 0; i < height - 1; i++) {
           let row = [];
           for (let j = 0; j < width - 1; j++) {
-            row.push({ state: SpaceStates.Empty, num: 0 });
+            row.push(newSpace({ id: `x: ${j}, y: ${i}`, pos: { x: j, y: i } }));
           }
           newBoard.push(row);
         }
