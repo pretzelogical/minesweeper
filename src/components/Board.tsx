@@ -21,7 +21,7 @@ export default function Board() {
   ))
 
   return (
-    <div className="flex">
+    <div className="flex h-full">
       <div className="m-auto">
         {spaces}
       </div>
