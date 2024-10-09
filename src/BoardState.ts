@@ -1,5 +1,7 @@
+import { WritableDraft } from 'immer'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
+import { current } from 'immer'
 
 export enum SpaceStates {
   Empty,
@@ -20,7 +22,8 @@ type BoardType = Array<Array<BoardSpaceType>>
 type MineSweeperState = {
   board: BoardType,
   initialize: (width: number, height: number, bombs: number) => void,
-  click: (x: number, y: number) => void
+  click: (x: number, y: number) => void,
+  gameInProgress: boolean
 }
 
 type GameState = {
@@ -44,9 +47,12 @@ function newSpace({
 }
 
 
+
+
 export const useBoardStore = create<GameState>()(
   immer((set) => ({
     minesweeper: {
+      gameInProgress: false,
       board: [
         [newSpace({})]
       ] as BoardType,
@@ -107,13 +113,25 @@ export const useBoardStore = create<GameState>()(
         }
         set((state) => {
           state.minesweeper.board = newBoard;
+          state.minesweeper.gameInProgress = true;
         })
       },
 
       click: (x: number, y: number) => {
-        // set((state) => {
-        //   state.board = checkBoard(x, y)
-        // })
+        set((state) => {
+          const minesweeper = current(state).minesweeper;
+          const board = minesweeper.board;
+          if (!minesweeper.gameInProgress) {
+            return;
+          }
+          console.log(`clicked x: ${x}, y: ${y}`);
+          console.log(minesweeper);
+
+          if (board[y][x].state === SpaceStates.Mined) {
+            state.minesweeper.gameInProgress = false;
+            alert('Game Over!');
+          }
+        })
         void 0;
       }
     }
