@@ -123,8 +123,6 @@ export const useBoardStore = create<GameState>()(
           if (!minesweeper.gameInProgress) {
             return;
           }
-          console.log(`clicked x: ${x}, y: ${y}`);
-          console.log(original(state)?.minesweeper);
 
           if (board[y][x].state === SpaceStates.Mined) {
             state.minesweeper.gameInProgress = false;
@@ -133,18 +131,15 @@ export const useBoardStore = create<GameState>()(
           }
 
           const revealStep = (x: number, y: number) => {
-            console.log(`Revealing: x: ${x}, y: ${y}`)
             if (
               y > board.length - 1
               || x > board[0].length - 1
               || y < 0
               || x < 0
             ) {
-              console.log('step oob', board.length, board[0].length);
               return;
             }
             const space = board[y][x]
-            console.log(space.covered);
             if (space.state === SpaceStates.Mined || space.covered === false) {
               return;
             }
@@ -154,7 +149,6 @@ export const useBoardStore = create<GameState>()(
               return;
             }
 
-            console.log(space);
 
             revealStep(x, y + 1);
             revealStep(x, y - 1);
