@@ -53,9 +53,9 @@ export const useBoardStore = create<GameState>()(
 
       initialize: (width: number, height: number, bombs: number): void => {
         const newBoard: BoardType = [];
-        for (let by = 0; by <= height; by++) {
+        for (let by = 0; by <= height - 1; by++) {
           let row = [];
-          for (let bx = 0; bx <= width; bx++) {
+          for (let bx = 0; bx <= width - 1; bx++) {
             row.push(newSpace({ id: `x: ${bx}, y: ${by}`, pos: { x: bx, y: by } }));
           }
           newBoard.push(row);
@@ -64,8 +64,8 @@ export const useBoardStore = create<GameState>()(
         let bombsRemaining = bombs;
 
         while (bombsRemaining > 0) {
-          let bx = Math.floor(Math.random() * (width - 1));
-          let by = Math.floor(Math.random() * (height - 1));
+          let bx = Math.floor(Math.random() * (width));
+          let by = Math.floor(Math.random() * (height));
 
           if (newBoard[by][bx].state === SpaceStates.Mined) {
             continue;
@@ -100,8 +100,8 @@ export const useBoardStore = create<GameState>()(
           return mineNum;
         }
 
-        for (let by = 0; by <= height; by++) {
-          for (let bx = 0; bx <= width; bx++) {
+        for (let by = 0; by <= height - 1; by++) {
+          for (let bx = 0; bx <= width - 1; bx++) {
             newBoard[by][bx].num = getMineNum(bx, by);
           }
         }
