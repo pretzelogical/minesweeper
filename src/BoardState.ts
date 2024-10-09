@@ -1,11 +1,10 @@
-import { WritableDraft } from 'immer'
+import { original, WritableDraft } from 'immer'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import { current } from 'immer'
 
 export enum SpaceStates {
   Empty,
-  Adjacent,
   Mined
 }
 
@@ -119,20 +118,51 @@ export const useBoardStore = create<GameState>()(
 
       click: (x: number, y: number) => {
         set((state) => {
-          const minesweeper = current(state).minesweeper;
+          const minesweeper = state.minesweeper;
           const board = minesweeper.board;
           if (!minesweeper.gameInProgress) {
             return;
           }
           console.log(`clicked x: ${x}, y: ${y}`);
-          console.log(minesweeper);
+          console.log(original(state)?.minesweeper);
 
           if (board[y][x].state === SpaceStates.Mined) {
             state.minesweeper.gameInProgress = false;
             alert('Game Over!');
+            return;
           }
+
+          const revealStep = (x: number, y: number) => {
+            console.log(`Revealing: x: ${x}, y: ${y}`)
+            if (
+              y > board.length - 1
+              || x > board[0].length - 1
+              || y < 0
+              || x < 0
+            ) {
+              console.log('step oob', board.length, board[0].length);
+              return;
+            }
+            const space = board[y][x]
+            console.log(space.covered);
+            if (space.state === SpaceStates.Mined || space.covered === false) {
+              return;
+            }
+            state.minesweeper.board[y][x].covered = false;
+
+            if (space.num > 0) {
+              return;
+            }
+
+            console.log(space);
+
+            revealStep(x, y + 1);
+            revealStep(x, y - 1);
+            revealStep(x + 1, y);
+            revealStep(x - 1, y);
+          }
+          revealStep(x, y);
         })
-        void 0;
       }
     }
   }))
