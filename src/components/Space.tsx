@@ -1,9 +1,9 @@
-import { BoardSpaceType, SpaceStates } from "../BoardState";
+import { BoardSpaceInterface, SpaceStates } from "../BoardState";
 import { useBoardStore } from "../BoardState";
 
 
 
-export function Space({ state, num, id, covered, pos }: BoardSpaceType) {
+export function Space({ state, num, id, covered, pos }: BoardSpaceInterface) {
   const click = useBoardStore((state) => state.minesweeper.click);
   return (
     <div

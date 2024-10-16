@@ -1,14 +1,14 @@
-import { original, WritableDraft } from 'immer'
+// import { original, WritableDraft } from 'immer'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
-import { current } from 'immer'
+// import { current } from 'immer'
 
 export enum SpaceStates {
   Empty,
   Mined
 }
 
-export type BoardSpaceType = {
+export interface BoardSpaceInterface {
   state: SpaceStates,
   num: number,
   id: string,
@@ -16,7 +16,7 @@ export type BoardSpaceType = {
   pos: { x: number, y: number }
 }
 
-type BoardType = Array<Array<BoardSpaceType>>
+type BoardType = Array<Array<BoardSpaceInterface>>
 
 type MineSweeperState = {
   board: BoardType,
@@ -35,7 +35,7 @@ function newSpace({
   id = '',
   covered = true,
   pos = { x: 0, y: 0 }
-}): BoardSpaceType {
+}): BoardSpaceInterface {
   return {
     state,
     num,
@@ -59,7 +59,7 @@ export const useBoardStore = create<GameState>()(
       initialize: (width: number, height: number, bombs: number): void => {
         const newBoard: BoardType = [];
         for (let by = 0; by <= height - 1; by++) {
-          let row = [];
+          const row = [];
           for (let bx = 0; bx <= width - 1; bx++) {
             row.push(newSpace({ id: `x: ${bx}, y: ${by}`, pos: { x: bx, y: by } }));
           }
@@ -69,8 +69,8 @@ export const useBoardStore = create<GameState>()(
         let bombsRemaining = bombs;
 
         while (bombsRemaining > 0) {
-          let bx = Math.floor(Math.random() * (width));
-          let by = Math.floor(Math.random() * (height));
+          const bx = Math.floor(Math.random() * (width));
+          const by = Math.floor(Math.random() * (height));
 
           if (newBoard[by][bx].state === SpaceStates.Mined) {
             continue;

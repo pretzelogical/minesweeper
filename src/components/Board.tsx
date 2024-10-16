@@ -7,7 +7,7 @@ export default function Board() {
   const initializeBoard = useBoardStore((store) => store.minesweeper.initialize)
   useEffect(() => {
     initializeBoard(8, 10, 5);
-  }, [])
+  }, [initializeBoard])
 
   const spaces = board.map((row) => (
     <div
