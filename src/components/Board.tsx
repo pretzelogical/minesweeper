@@ -2,6 +2,7 @@ import { useEffect } from "react"
 import { useBoardStore } from "../BoardState"
 import { Space } from "./Space"
 
+
 export default function Board() {
   const board = useBoardStore((store) => store.minesweeper.board)
   const initializeBoard = useBoardStore((store) => store.minesweeper.initialize)
@@ -11,11 +12,11 @@ export default function Board() {
 
   const spaces = board.map((row) => (
     <div
-      className="flex my-1"
+      className="flex"
       key={`r ${row[0].id}`}
     >
       {row.map((space) => (
-        <Space {...space} key={space.id} />
+        <Space {...space} width={board[0].length} height={board.length} key={space.id} />
       ))}
     </div>
   ))
